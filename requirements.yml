@@ -1,3 +1,6 @@
 ---
+# Required Dependencies used by the play book
+# To install them invoke the command `ansible-galaxy install -r requirements.yml`
 - src: geerlingguy.firewall
+- src: geerlingguy.pip
 - src: geerlingguy.ansible

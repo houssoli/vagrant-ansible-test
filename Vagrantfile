@@ -3,9 +3,26 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
+$SCRIPT = <<-SCRIPT
+echo I am provisioning...
+date > /etc/vagrant_provisioned_at
+
+#export DEBIAN_FRONTEND=noninteractive
+#apt-get update &&
+#  #apt-get -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::="--force-confold" upgrade -q -y --force-yes &&
+#  apt -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::="--force-confold" dist-upgrade -q -y --force-yes
+#apt install python-pip python3-pip -y
+#pip3 install ansible
+#python get-pip.py
+#apt autoremove -y
+#apt autoclean -y
+
+SCRIPT
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "geerlingguy/ubuntu1804"
-  config.vm.hostname = "vagrant-ansible.test"
+  config.vm.box = "bento/ubuntu-18.04"
+  config.vm.hostname = "vm-01.vagrant"
+  config.vm.define "vm-01"
   config.vm.network :private_network, ip: "192.168.76.76"
   config.ssh.insert_key = false
 
@@ -13,9 +30,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.memory = 512
   end
 
+  config.vm.provision "shell", inline: $SCRIPT
+
   # Ansible provisioning.
+  # Run Ansible from the Vagrant Host
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "provision.yml"
+    ansible.inventory_path = "vagrant.inv"
     ansible.become = true
+    ansible.compatibility_mode = "2.0"
   end
 end

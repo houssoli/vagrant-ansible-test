@@ -4,7 +4,19 @@
   vars:
     firewall_allowed_tcp_ports:
       - "22"
+    ansible_install_method: pip
+    ansible_install_version_pip: "2.7.0"
 
   roles:
     - geerlingguy.firewall
+    - geerlingguy.pip
     - geerlingguy.ansible
+
+  tasks:
+    - name: ensure ntpd is at the latest version
+      apt: pkg=ntp state=latest
+      notify:
+      - restart ntpd
+  handlers:
+    - name: restart ntpd
+      service: name=ntpd state=restarted
