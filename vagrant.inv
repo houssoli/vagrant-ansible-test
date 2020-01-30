@@ -1,2 +1,3 @@
 default ansible_ssh_host=192.168.76.76
 vm1 ansible_ssh_host=192.168.76.76
+vm2 ansible_ssh_host=192.168.76.77

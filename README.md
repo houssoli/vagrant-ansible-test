@@ -23,8 +23,8 @@ Note: *If there are any errors during the course of running `vagrant up`, and it
 
 ### 3 - Configure your host machine to access the VM
 
-  1. [Edit your hosts file](https://support.rackspace.com/how-to/modify-your-hosts-file/), adding the line `192.168.76.76  vm-01.vagrant` so you can connect to the VM.
-  2. Open your a terminal with `vagrant ssh vm-01` so you will be connected to the VM.
+  1. [Edit your hosts file](https://support.rackspace.com/how-to/modify-your-hosts-file/), adding the line `192.168.76.76  vm1.vagrant` so you can connect to the VM.
+  2. Open your a terminal with `vagrant ssh vm1` so you will be connected to the VM.
 
 ## Notes
 
