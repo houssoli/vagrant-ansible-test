@@ -26,6 +26,14 @@ Note: *If there are any errors during the course of running `vagrant up`, and it
   1. [Edit your hosts file](https://support.rackspace.com/how-to/modify-your-hosts-file/), adding the line `192.168.76.76  vm1.vagrant` so you can connect to the VM.
   2. Open your a terminal with `vagrant ssh vm1` so you will be connected to the VM.
 
+  3. `sudo hostnamectl set-hostname vm1.vagrant` will be sometime helpful to set the fully qualified domain name of vm1.
+  4. Then `netcat -v -w 5 vm1.vagrant 22` should return into stdout the message of a connection to the `vm1.vagrant` ssh server port:
+
+  ```
+  Connection to vm1.vagrant 22 port [tcp/ssh] succeeded!
+  SSH-2.0-OpenSSH_7.6p1 Ubuntu-4ubuntu0.3
+  ```
+
 ## Notes
 
 - To shut down the virtual machine, enter `vagrant halt` in the Terminal in the same folder that has the `Vagrantfile`. To destroy it completely (if you want to save a little disk space, or want to rebuild it from scratch with `vagrant up` again), type in `vagrant destroy`.

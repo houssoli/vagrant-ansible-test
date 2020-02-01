@@ -22,9 +22,9 @@ grep '192.168.76.76 vm1 vm1.vagrant' /etc/hosts \
   || cat <<EOF_ETC_HOSTS | sudo tee -a /etc/hosts
 
 # add addresses to /etc/hosts
-192.168.76.76 vm1 vm1.vagrant
-192.168.76.77 vm2 vm2.vagrant
-#192.168.76.78 vm3 vm3.vagrant
+192.168.76.76 vm1.vagrant
+192.168.76.77 vm2.vagrant
+#192.168.76.78 vm3.vagrant
 EOF_ETC_HOSTS
 
 date > /etc/vagrant_provisioned_at
@@ -34,7 +34,7 @@ SCRIPT
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "vm1" do |node|
     node.vm.box = "bento/ubuntu-18.04"
-    node.vm.hostname = "vm1.vagrant"
+    #node.vm.hostname = "vm1.vagrant"
     node.vm.define "vm1"
     node.vm.network :private_network, ip: "192.168.76.76"
     node.ssh.insert_key = false
@@ -68,7 +68,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "vm2" do |node|
     node.vm.box = "bento/ubuntu-18.04"
-    node.vm.hostname = "vm2.vagrant"
+    #node.vm.hostname = "vm2.vagrant"
     node.vm.define "vm2"
     node.vm.network :private_network, ip: "192.168.76.77"
     node.ssh.insert_key = false
