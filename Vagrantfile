@@ -18,7 +18,7 @@ mkdir -p /datadrive
 #apt autoremove -y
 #apt autoclean -y
 
-grep '192.168.76.76 vm1 vm1.vagrant' /etc/hosts \
+grep '192.168.76.76 vm1.vagrant' /etc/hosts \
   || cat <<EOF_ETC_HOSTS | sudo tee -a /etc/hosts
 
 # add addresses to /etc/hosts
