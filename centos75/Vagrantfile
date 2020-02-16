@@ -22,29 +22,31 @@ date > /etc/vagrant_provisioned_at
 SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.define "vm1" do |node|
+  config.vm.define "vm1-centos75" do |node|
     node.vm.box = "centos/7"
     node.vm.box_version = "1804.02"
-    node.vm.hostname = "vm1.vagrant"
+    node.vm.hostname = "vm1-centos75.vagrant"
     node.vm.network :private_network, ip: "192.168.76.76"
     node.ssh.insert_key = false
 
     node.vm.provider :virtualbox do |v|
+      # v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       v.memory = 1536
-      v.name = "vm1-centos75"
+      v.name = "vm1-centos"
     end
 
     node.vm.provision "shell", inline: $SCRIPT
   end
 
-  config.vm.define "vm2" do |node|
+  config.vm.define "vm2-centos75" do |node|
     node.vm.box = "centos/7"
     node.vm.box_version = "1804.02"
-    node.vm.hostname = "vm2.vagrant"
+    node.vm.hostname = "vm2-centos75.vagrant"
     node.vm.network :private_network, ip: "192.168.76.77"
     node.ssh.insert_key = false
 
     node.vm.provider :virtualbox do |v|
+      # v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       v.memory = 1536
       v.name = "vm2-centos75"
     end
