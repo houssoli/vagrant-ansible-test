@@ -1,0 +1,42 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+$SCRIPT = <<-SCRIPT
+echo I am provisioning...
+
+mkdir -p /datadrive
+
+grep '192.168.80.80 ipaserver.test.local' /etc/hosts \
+  || cat <<EOF_ETC_HOSTS | sudo tee -a /etc/hosts
+
+# add addresses to /etc/hosts
+192.168.80.80 ipaserver.test.local
+192.168.80.81 ipareplicat1.test.local
+192.168.80.85 ipaclient1.test.local
+192.168.80.86 ipaclient2.test.local
+EOF_ETC_HOSTS
+
+date > /etc/vagrant_provisioned_at
+
+SCRIPT
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.define "ipaserver" do |node|
+    node.vm.box = "centos/7"
+    node.vm.box_version = "1804.02"
+    node.vm.hostname = "ipaserver"
+    node.vm.network :private_network, ip: "192.168.80.80"
+    node.ssh.insert_key = false
+
+    node.vm.provider :virtualbox do |v|
+      # v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.memory = 1024
+      v.name = "ipaserver"
+    end
+
+    node.vm.provision "shell", inline: $SCRIPT
+  end
+
+end
