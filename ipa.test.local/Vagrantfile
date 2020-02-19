@@ -13,7 +13,7 @@ grep '192.168.80.80 ipaserver.test.local' /etc/hosts \
 
 # add addresses to /etc/hosts
 192.168.80.80 ipaserver.test.local
-192.168.80.81 ipareplicat1.test.local
+192.168.80.81 ipareplica1.test.local
 192.168.80.85 ipaclient1.test.local
 192.168.80.86 ipaclient2.test.local
 EOF_ETC_HOSTS
@@ -22,21 +22,75 @@ date > /etc/vagrant_provisioned_at
 
 SCRIPT
 
+# Use artefacts/config/multi-nodes.yml for basic VM configuration.
+require 'yaml'
+dir = File.dirname(File.expand_path(__FILE__))
+config_nodes = "#{dir}/artefacts/config/multi-nodes.yml"
+
+if !File.exist?("#{config_nodes}")
+  raise 'Configuration file is missing! Please make sure that the configuration exists and try again.'
+end
+vconfig = YAML::load_file("#{config_nodes}")
+
+BRIDGE_NET = vconfig['vagrant_ip']
+DOMAIN = vconfig['vagrant_domain_name']
+RAM = vconfig['vagrant_memory']
+CPU = vconfig['vagrant_cpu']
+servers=[
+    {
+        :name => "ipaserver",
+        :hostname => "ipaserver" + "." + "#{DOMAIN}",
+        :ip => "#{BRIDGE_NET}" + "80",
+        :ram => "#{RAM}",
+        :cpu => "#{CPU}"
+    },
+    {
+        :name => "ipareplica1",
+        :hostname => "ipareplica1" + "." + "#{DOMAIN}",
+        :ip => "#{BRIDGE_NET}" + "81",
+        :ram => "#{RAM}",
+        :cpu => "#{CPU}"
+    },
+    {
+        :name => "ipaclient1",
+        :hostname => "ipaclient1" + "." + "#{DOMAIN}",
+        :ip => "#{BRIDGE_NET}" + "85",
+        :ram => "#{RAM}",
+        :cpu => "#{CPU}"
+    },
+    {
+        :name => "ipaclient2",
+        :hostname => "ipaclient2" + "." + "#{DOMAIN}",
+        :ip => "#{BRIDGE_NET}" + "86",
+        :ram => "#{RAM}",
+        :cpu => "#{CPU}"
+    }
+]
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.define "ipaserver" do |node|
-    node.vm.box = "centos/7"
-    node.vm.box_version = "1804.02"
-    node.vm.hostname = "ipaserver"
-    node.vm.network :private_network, ip: "192.168.80.80"
-    node.ssh.insert_key = false
+  config.vm.synced_folder ".", vconfig['vagrant_directory'], :mount_options => ["dmode=777", "fmode=666"]
+  servers.each_with_index do |machine, index|
+    config.vm.define machine[:name] do |node|
+      node.vm.box = vconfig['vagrant_box']
+      node.vm.box_version = vconfig['vagrant_box_version']
+      node.vm.hostname = machine[:hostname]
+      node.vm.network :private_network, ip: machine[:ip]
+      node.ssh.insert_key = false
 
-    node.vm.provider :virtualbox do |v|
-      # v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-      v.memory = 1024
-      v.name = "ipaserver"
+      node.vm.provider :virtualbox do |vb|
+        # vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        vb.cpus = machine[:cpu]
+        vb.memory = machine[:ram]
+        vb.name = machine[:name]
+      end
+
+      node.vm.provision "shell", inline: $SCRIPT
+
+      if index+1 == servers.length
+        node.vm.provision :shell, inline: <<-SHELL
+          echo 'I am provisioning the last VM with some specifics (like inventories to know about all the previous) ...'
+        SHELL
+      end
     end
-
-    node.vm.provision "shell", inline: $SCRIPT
   end
-
 end
