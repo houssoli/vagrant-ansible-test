@@ -84,8 +84,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         vb.name = machine[:name]
       end
 
-      node.vm.provision "shell", inline: $SCRIPT
-
+      node.vm.provision :shell, inline: $SCRIPT
+      #node.vm.provision :shell, inline: "sed -i.bak 's/^\\(127.0.0.1.*\\t\\)#{node.vm.hostname}\\t\\(#{machine[:name]}\\)$/\\1\\2/' /etc/hosts"
+      node.vm.provision :shell, inline: "sed -i.bak '/^\\(127.0.0.1.*\\t\\)#{node.vm.hostname}\\t\\(#{machine[:name]}\\)$/d' /etc/hosts"
       if index+1 == servers.length
         node.vm.provision :shell, inline: <<-SHELL
           echo 'I am provisioning the last VM with some specifics (like inventories to know about all the previous) ...'
