@@ -8,14 +8,17 @@ echo I am provisioning...
 
 mkdir -p /datadrive
 
+yum update -y && yum install -y epel-release && yum update -y
+yum install -y tree less nmap-ncat.x86_64 socat.x86_64 htop.x86_64
+
 grep '192.168.80.80 ipaserver.ipa.test.local' /etc/hosts \
   || cat <<EOF_ETC_HOSTS | sudo tee -a /etc/hosts
 
 # add addresses to /etc/hosts
-192.168.80.80 ipaserver.ipa.test.local
-192.168.80.81 ipareplica1.ipa.test.local
-192.168.80.85 ipaclient1.ipa.test.local
-192.168.80.86 ipaclient2.ipa.test.local
+192.168.80.80 ipaserver.ipa.test.local ipaserver
+192.168.80.81 ipareplica1.ipa.test.local ipareplica1
+192.168.80.85 ipaclient1.ipa.test.local ipaclient1
+192.168.80.86 ipaclient2.ipa.test.local ipaclient2
 EOF_ETC_HOSTS
 
 date > /etc/vagrant_provisioned_at
