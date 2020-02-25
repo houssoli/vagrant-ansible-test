@@ -6,4 +6,4 @@ vagrant_memory: 1024
 vagrant_directory: /vagrant
 vagrant_cpu: 1
 vagrant_box_check_update: false
-vagrant_domain_name: ipa.test.local
+vagrant_domain_name: ipa.bmxinit.ga
