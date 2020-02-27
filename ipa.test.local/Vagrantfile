@@ -20,6 +20,7 @@ grep '192.168.80.80 ipaserver.ipa.bmxinit.ga' /etc/hosts \
 192.168.80.81 ipareplica1.ipa.bmxinit.ga ipareplica1
 192.168.80.85 ipaclient1.ipa.bmxinit.ga ipaclient1
 192.168.80.86 ipaclient2.ipa.bmxinit.ga ipaclient2
+192.168.80.87 keycloak.devops.bmxinit.ga keycloak
 EOF_ETC_HOSTS
 
 date > /etc/vagrant_provisioned_at
@@ -66,6 +67,13 @@ servers=[
         :name => "ipaclient2",
         :hostname => "ipaclient2" + "." + "#{DOMAIN}",
         :ip => "#{BRIDGE_NET}" + "86",
+        :ram => "#{RAM}",
+        :cpu => "#{CPU}"
+    },
+    {
+        :name => "keycloak",
+        :hostname => "keycloak" + "." + "devops.bmxinit.ga",
+        :ip => "#{BRIDGE_NET}" + "87",
         :ram => "#{RAM}",
         :cpu => "#{CPU}"
     }
