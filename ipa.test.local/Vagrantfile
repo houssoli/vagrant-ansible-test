@@ -80,7 +80,6 @@ servers=[
 ]
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.synced_folder ".", vconfig['vagrant_directory'], :mount_options => ["dmode=777", "fmode=666"]
   servers.each_with_index do |machine, index|
     config.vm.define machine[:name] do |node|
       node.vm.box = vconfig['vagrant_box']
